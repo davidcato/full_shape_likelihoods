@@ -19,16 +19,18 @@ class full_shape_spectra(Likelihood_prior):
                 """Initialize the full shape likelihood. This loads the data-set and pre-computes a number of useful quantities."""
                 
                 # Copy in attributes (necessary in py3 for some reason...)
-                for attr in extra_inputs.__dict__.keys():
-                        setattr(self,attr,getattr(extra_inputs,attr))
+                # for attr in extra_inputs.__dict__.keys():
+                #        setattr(self,attr,getattr(extra_inputs,attr))
 
                 # Initialize the  likelihood
                 Likelihood_prior.__init__(self,path,data,command_line)
 
                 # Check whether to use one-loop Bk
-                if self.use_B and not hasattr(self,'oneloop_B'):
+                # if self.use_B and not hasattr(self,'oneloop_B'):
+                if self.use_B and not self.oneloop_B:
                         self.oneloop_B = False
-                if hasattr(self,'oneloop_B'):
+                # if hasattr(self,'oneloop_B'):
+                if self.oneloop_B:
                         raise Exception("Not yet fully implemented!")                        
                 # Check ell-max
                 if not hasattr(self, 'lmax'):
@@ -117,7 +119,7 @@ class full_shape_spectra(Likelihood_prior):
                                 print("")
                 print("#################################################\n")
                 
-         def loglkl(self, cosmo, data):
+        def loglkl(self, cosmo, data):
                 """Compute the log-likelihood for a given set of cosmological and nuisance parameters. Note that this marginalizes over nuisance parameters that enter the model linearly."""
 
                 # Load cosmological parameters
@@ -198,7 +200,7 @@ class full_shape_spectra(Likelihood_prior):
                 # Iterate over redshift bins
                 for zi in range(self.nz):
                     
-                        nP, nQ, nB, nAP = dataset.nP[zi], dataset.nQ[zi], dataset.nB[zi], dataset.nAP
+                        nP, nQ, nB, nAP = int(dataset.nP[zi]), int(dataset.nQ[zi]), int(dataset.nB[zi]), int(dataset.nAP)
                         
                         # Create output arrays
                         theory_minus_data = np.zeros(self.nl*nP+nB+nQ+nAP)
